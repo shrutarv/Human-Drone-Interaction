@@ -40,18 +40,3 @@ if data is None:
 
 print("Disconnecting...")
 c.disconnect()
-
-# Save the logged data.
-class MetaWearDataEncoder(json.JSONEncoder):
-    """JSON Encoder for converting ``mbientlab`` module's CartesianFloat
-    class to data tuple ``(x,y,z)``."""
-    def default(self, o):
-        if isinstance(o, CartesianFloat):
-            return o.x, o.y, o.z
-        else:
-            return super(MetaWearDataEncoder, self).default(o)
-
-data_file = os.path.join(os.getcwd(), "logged_data.json")
-print("Saving the data to file: {0}".format(data_file))
-with open("logged_data.json", "wt") as f:
-    json.dump(data, f, indent=2)
