@@ -1,7 +1,3 @@
-
-
-import os
-import json
 import time
 
 from pymetawear.client import MetaWearClient
