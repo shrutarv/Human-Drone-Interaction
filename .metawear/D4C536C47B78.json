@@ -1,10 +1,10 @@
 {
   "info": {
+    "firmware": "1.7.3",
     "model": "5",
     "hardware": "0.3",
     "manufacturer": "MbientLab Inc",
-    "serial": "0316DB",
-    "firmware": "1.7.3"
+    "serial": "0316E4"
   },
   "cpp_state": [
     2,
@@ -646,15 +646,15 @@
     19,
     0,
     1,
-    84,
-    191,
-    220,
-    230,
+    180,
+    160,
+    26,
+    212,
     129,
     1,
     0,
     0,
-    1,
+    2,
     0
   ]
 }
