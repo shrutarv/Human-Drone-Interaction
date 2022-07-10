@@ -3,7 +3,8 @@ import time
 from pymetawear.client import MetaWearClient
 from pymetawear.exceptions import PyMetaWearException, PyMetaWearDownloadTimeout
 RE = 'D4:C5:36:C4:7B:78'
-c = MetaWearClient(RE)
+LE = ('D3:FE:9A:01:90:57')
+c = MetaWearClient(LE)
 
 # Set data rate to 50 Hz and measuring range to +/- 8g
 c.accelerometer.set_settings(data_rate=50.0, data_range=8)
