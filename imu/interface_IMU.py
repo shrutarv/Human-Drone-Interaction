@@ -37,12 +37,12 @@ class interface_IMU:
 
     
     def start_logging(self):
-        print('started data logging')
         self.imu_client.accelerometer.start_logging()
+        print('started data logging')
 
     def stop_logging(self):
-        print('completed data logging')
         self.imu_client.accelerometer.stop_logging()
+        print('completed data logging')
 
     def convert_data(self,data):
         converted_data = np.zeros((len(data),4))
