@@ -10,6 +10,11 @@ class interface_IMU:
         Connect to IMU
         '''
         self.imu_client = MetaWearClient(mac_addr)
+        
+        #set accelerometerlogging settings
+        self.imu_client.accelerometer.set_settings(data_rate=50, data_range=8)
+        self.imu_client.accelerometer.high_frequency_stream = False
+
         self.switch_pressed = None
 
     def monitor_imu(self):
@@ -33,7 +38,6 @@ class interface_IMU:
     
     def start_logging(self):
         print('started data logging')
-        self.imu_client.accelerometer.set_settings(data_rate=50, data_range=8)
         self.imu_client.accelerometer.start_logging()
 
     def stop_logging(self):
