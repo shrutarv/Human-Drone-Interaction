@@ -10,6 +10,7 @@ class interface_IMU:
         Connect to IMU
         '''
         self.imu_client = MetaWearClient(mac_addr)
+        self.monitor_imu()
         
         #set accelerometerlogging settings
         self.imu_client.accelerometer.set_settings(data_rate=50, data_range=8)
@@ -25,14 +26,13 @@ class interface_IMU:
             """Handle a switch status integer (1 for pressed, 0 for released.)."""
             if data['value'] == 1:
                 self.switch_pressed = True
-                # print('on')
-                # self.start_logging()
-            
+                # print('on')            
+
             elif data['value'] == 0:
                 self.switch_pressed = False
                 # print('off')
-                # self.stop_logging()
-
+        
+        #Subscribe to imu button notifications
         self.imu_client.switch.notifications(switch_callback)
 
     
@@ -45,7 +45,7 @@ class interface_IMU:
         print('completed data logging')
 
     def convert_data(self,data):
-        converted_data = np.zeros((len(data),4))
+        converted_data = np.zeros((len(data),3))
         for i in range(len(data)):
             converted_data[i,0] = data[i]['value'].x
             converted_data[i,1] = data[i]['value'].y
