@@ -3,7 +3,7 @@ import time
 from pymetawear.client import MetaWearClient
 from pymetawear.exceptions import PyMetaWearException, PyMetaWearDownloadTimeout
 RE = 'D4:C5:36:C4:7B:78'
-LE = ('D3:FE:9A:01:90:57')
+LE = 'D3:FE:9A:01:90:57'
 c = MetaWearClient(LE)
 
 # Set data rate to 50 Hz and measuring range to +/- 8g
@@ -17,6 +17,8 @@ time.sleep(2.0)
 
 c.accelerometer.stop_logging()
 print("Finished logging.")
+
+#%%
 
 # Download the stored data from the MetaWear board.
 print("Downloading data...")
