@@ -12,9 +12,9 @@ class interface_IMU:
         self.imu_client = MetaWearClient(mac_addr)
         self.monitor_imu()
         
-        #set accelerometerlogging settings
-        self.imu_client.accelerometer.set_settings(data_rate=50, data_range=8)
-        self.imu_client.accelerometer.high_frequency_stream = False
+        #set gyrometerlogging settings
+        self.imu_client.gyroscope.set_settings(data_rate=50)
+        self.imu_client.gyroscope.high_frequency_stream = False
 
         self.switch_pressed = None
 
@@ -37,11 +37,11 @@ class interface_IMU:
 
     
     def start_logging(self):
-        self.imu_client.accelerometer.start_logging()
+        self.imu_client.gyroscope.start_logging()
         print('started data logging')
 
     def stop_logging(self):
-        self.imu_client.accelerometer.stop_logging()
+        self.imu_client.gyroscope.stop_logging()
         print('completed data logging')
 
     def convert_data(self,data):
@@ -60,16 +60,17 @@ class interface_IMU:
         data = None
         while (not download_done) and n < 3:
             try:
-                data = self.imu_client.accelerometer.download_log()
-                data_acc = self.convert_data(data)
+                data = self.imu_client.gyroscope.download_log()
+                data_gyro = self.convert_data(data)
+
                 download_done = True
             except PyMetaWearDownloadTimeout:
                 print("Download of log interrupted. Trying to reconnect...")
                 self.imu_client.disconnect()
                 self.imu_client.connect()
                 n += 1
-        return data_acc
+        return data_gyro
     
     def get_imu_data(self):
-        data_acc = self.download_data()
-        return data_acc
+        data_gyro = self.download_data()
+        return data_gyro

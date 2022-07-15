@@ -6,7 +6,7 @@ import numpy as np
 
 
 RE = interface_IMU('D3:FE:9A:01:90:57')
-model = keras.models.load_model('/home/violet/Master_Thesis/Human-Drone-Interaction/model_acc_only')
+model = keras.models.load_model('/home/violet/Master_Thesis/Human-Drone-Interaction/model_gyro_only')
 
 gestures = {
     '0':'swipe_left',
@@ -32,10 +32,10 @@ while True:
                         RE.stop_logging()
                         log_done = True
         
-        data_acc = RE.get_imu_data()
+        data_gyro = RE.get_imu_data()
         # Add your code here
-        data_acc_resampled = np.array([resample(data_acc, 50, axis=0)])
-        prediction = model.predict(data_acc_resampled)
+        data_gyro_resampled = np.array([resample(data_gyro, 50, axis=0)])
+        prediction = model.predict(data_gyro_resampled)
         gesture_idx = np.argmax(prediction)
         print(gestures[str(gesture_idx)])
         print('Confidence: ', np.max(prediction)*100,'%')
