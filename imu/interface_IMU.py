@@ -13,8 +13,8 @@ class interface_IMU:
         self.monitor_imu()
         
         #set gyrometerlogging settings
-        self.imu_client.gyroscope.set_settings(data_rate=50)
-        self.imu_client.gyroscope.high_frequency_stream = False
+        self.imu_client.accelerometer.set_settings(data_rate=50)
+        self.imu_client.accelerometer.high_frequency_stream = False
 
         self.switch_pressed = None
 
@@ -37,19 +37,20 @@ class interface_IMU:
 
     
     def start_logging(self):
-        self.imu_client.gyroscope.start_logging()
+        self.imu_client.accelerometer.start_logging()
         print('started data logging')
 
     def stop_logging(self):
-        self.imu_client.gyroscope.stop_logging()
+        self.imu_client.accelerometer.stop_logging()
         print('completed data logging')
 
     def convert_data(self,data):
         converted_data = np.zeros((len(data),3))
         for i in range(len(data)):
-            converted_data[i,0] = data[i]['value'].x
-            converted_data[i,1] = data[i]['value'].y
-            converted_data[i,2] = data[i]['value'].z
+        #exchanging the naming to match with 6DMG dataset
+            converted_data[i,0] = data[i]['value'].z #x 
+            converted_data[i,1] = data[i]['value'].x #y
+            converted_data[i,2] = data[i]['value'].y #z
         return converted_data
 
 
@@ -60,7 +61,7 @@ class interface_IMU:
         data = None
         while (not download_done) and n < 3:
             try:
-                data = self.imu_client.gyroscope.download_log()
+                data = self.imu_client.accelerometer.download_log()
                 data_gyro = self.convert_data(data)
 
                 download_done = True
@@ -72,5 +73,5 @@ class interface_IMU:
         return data_gyro
     
     def get_imu_data(self):
-        data_gyro = self.download_data()
-        return data_gyro
+        data_acc = self.download_data()
+        return data_acc
