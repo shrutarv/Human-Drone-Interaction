@@ -5,8 +5,9 @@ import numpy as np
 
 
 
-RE = interface_IMU('D3:FE:9A:01:90:57')
-model = keras.models.load_model('/home/violet/Master_Thesis/Human-Drone-Interaction/model_gyro_only')
+RE = interface_IMU('D3:FE:9A:01:90:57') #LE
+#RE = interface_IMU('D4:C5:36:C4:7B:78')
+model = keras.models.load_model('/home/violet/Master_Thesis/Human-Drone-Interaction/model_acc_only')
 
 gestures = {
     '0':'swipe_left',
@@ -19,6 +20,10 @@ gestures = {
     '7':'V ccw crl',
     
 }
+def rescale_xyz(arr):
+    xyz_max = max(arr.reshape(-1,1))[0]
+    arr_scaled = arr/xyz_max
+    return arr_scaled
 
 while True:
     try:
@@ -32,10 +37,11 @@ while True:
                         RE.stop_logging()
                         log_done = True
         
-        data_gyro = RE.get_imu_data()
+        data_acc = RE.get_imu_data()
         # Add your code here
-        data_gyro_resampled = np.array([resample(data_gyro, 50, axis=0)])
-        prediction = model.predict(data_gyro_resampled)
+        data_acc_resampled = resample(data_acc, 50, axis=0)
+        data_acc_rescaled = np.array([rescale_xyz(data_acc_resampled)])
+        prediction = model.predict(data_acc_rescaled)
         gesture_idx = np.argmax(prediction)
         print(gestures[str(gesture_idx)])
         print('Confidence: ', np.max(prediction)*100,'%')
