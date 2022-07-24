@@ -10,8 +10,12 @@ class interface_IMU:
         Connect to IMU
         '''
         self.imu_client = MetaWearClient(mac_addr)
+#from scipy.signal import resample
         self.monitor_imu()
         
+        self.acc_raw_data = []
+        self.gyro_raw_data = []
+
         #set gyrometerlogging settings
         self.imu_client.accelerometer.set_settings(data_rate=50)
         self.imu_client.accelerometer.high_frequency_stream = False
@@ -35,12 +39,14 @@ class interface_IMU:
         
         #Subscribe to imu button notifications
         self.imu_client.switch.notifications(switch_callback)
+#from scipy.signal import resample
 
     
     def start_logging(self):
         self.imu_client.accelerometer.start_logging()
         print('started data logging')
 
+#from scipy.signal import resample
     def stop_logging(self):
         self.imu_client.accelerometer.stop_logging()
         print('completed data logging')
@@ -49,9 +55,9 @@ class interface_IMU:
         converted_data = np.zeros((len(data),3))
         for i in range(len(data)):
         #exchanging the naming to match with 6DMG dataset
-            converted_data[i,0] = data[i]['value'].z #x 
-            converted_data[i,1] = data[i]['value'].x #y
-            converted_data[i,2] = data[i]['value'].y #z
+            converted_data[i,0] = data[i]['value'].x #x 
+            converted_data[i,1] = data[i]['value'].y #y
+            converted_data[i,2] = data[i]['value'].z #z
         return converted_data
 
 
@@ -77,15 +83,15 @@ class interface_IMU:
         data_acc = self.download_data()
         return data_acc
 
-    
-
-
     def start_streaming(self):
         def acc_callback(data):
-            print("Acc:",data) # [{0}] - X: {1}, Y: {2}, Z: {3}".format(data[0], *data[1]))
+            #print("Acc:",data) # [{0}] - X: {1}, Y: {2}, Z: {3}".format(data[0], *data[1]))
+            self.acc_raw_data.append(data) 
 
         def gyro_callback(data):
-            print("gyro:",data) # [{0}] - X: {1}, Y: {2}, Z: {3}".format(data[0], *data[1]))
+            #print("gyro:",data) # [{0}] - X: {1}, Y: {2}, Z: {3}".format(data[0], *data[1]))
+            self.gyro_raw_data.append(data)
+
 
         print("Subscribing to gyroscope signal notifications...")
         self.imu_client.gyroscope.notifications(gyro_callback)
@@ -95,3 +101,8 @@ class interface_IMU:
     def stop_streaming(self):
         self.imu_client.gyroscope.notifications(None)
         self.imu_client.accelerometer.notifications(None)
+
+    def get_data(self):
+        acc_data = self.convert_data(self.acc_raw_data)
+        gyro_data = self.convert_data(self.gyro_raw_data)
+        return(acc_data, gyro_data)
