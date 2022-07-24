@@ -4,7 +4,6 @@ from mbientlab.metawear import MetaWear, libmetawear, parse_value
 from mbientlab.metawear.cbindings import *
 from time import sleep
 from threading import Event
-
 import platform
 import sys
 
@@ -30,73 +29,72 @@ class State:
         self.samples+= 1
 
 # init
-states = []
+
 # connect to IMU
 metawear_mac = 'D4:C5:36:C4:7B:78'
 #metawear_mac = 'D4:C5:36:C4:7B:78'
 d = MetaWear(metawear_mac)
 d.connect()
 print("Connected to " + d.address + " over " + ("USB" if d.usb.is_connected else "BLE"))
-states.append(State(d))
+states =State(d)
 
 # configure all metawears
-for s in states:
-    print("Configuring device")
-    libmetawear.mbl_mw_settings_set_connection_parameters(s.device.board, 7.5, 7.5, 0, 6000)
-    sleep(1.5)
 
-    # config acc
-    #libmetawear.mbl_mw_acc_set_odr(s.device.board, 50.0) # Generic call
-    libmetawear.mbl_mw_acc_bmi160_set_odr(s.device.board, AccBmi160Odr._50Hz) # BMI 160 specific call
-    libmetawear.mbl_mw_acc_bosch_set_range(s.device.board, AccBoschRange._4G)
-    libmetawear.mbl_mw_acc_write_acceleration_config(s.device.board)
+print("Configuring device")
+libmetawear.mbl_mw_settings_set_connection_parameters(states.device.board, 7.5, 7.5, 0, 6000)
+sleep(1.5)
 
-    # config gyro
-    libmetawear.mbl_mw_gyro_bmi160_set_range(s.device.board, GyroBoschRange._1000dps);
-    libmetawear.mbl_mw_gyro_bmi160_set_odr(s.device.board, GyroBoschOdr._50Hz);
-    libmetawear.mbl_mw_gyro_bmi160_write_config(s.device.board);
+# config acc
+#libmetawear.mbl_mw_acc_set_odr(s.device.board, 50.0) # Generic call
+libmetawear.mbl_mw_acc_bmi160_set_odr(states.device.board, AccBmi160Odr._50Hz) # BMI 160 specific call
+libmetawear.mbl_mw_acc_bosch_set_range(states.device.board, AccBoschRange._4G)
+libmetawear.mbl_mw_acc_write_acceleration_config(states.device.board)
 
-    # get acc signal and subscribe
-    acc = libmetawear.mbl_mw_acc_get_acceleration_data_signal(s.device.board)
-    libmetawear.mbl_mw_datasignal_subscribe(acc, None, s.accCallback)
+# config gyro
+libmetawear.mbl_mw_gyro_bmi160_set_range(states.device.board, GyroBoschRange._1000dps);
+libmetawear.mbl_mw_gyro_bmi160_set_odr(states.device.board, GyroBoschOdr._50Hz);
+libmetawear.mbl_mw_gyro_bmi160_write_config(states.device.board);
 
-    # get gyro signal and subscribe
-    gyro = libmetawear.mbl_mw_gyro_bmi160_get_rotation_data_signal(s.device.board)
-    libmetawear.mbl_mw_datasignal_subscribe(gyro, None, s.gyroCallback)
+# get acc signal and subscribe
+acc = libmetawear.mbl_mw_acc_get_acceleration_data_signal(states.device.board)
+libmetawear.mbl_mw_datasignal_subscribe(acc, None, states.accCallback)
 
-    # start acc
-    libmetawear.mbl_mw_acc_enable_acceleration_sampling(s.device.board)
-    libmetawear.mbl_mw_acc_start(s.device.board)
+# get gyro signal and subscribe
+gyro = libmetawear.mbl_mw_gyro_bmi160_get_rotation_data_signal(states.device.board)
+libmetawear.mbl_mw_datasignal_subscribe(gyro, None, states.gyroCallback)
 
-    # start gyro
-    libmetawear.mbl_mw_gyro_bmi160_enable_rotation_sampling(s.device.board)
-    libmetawear.mbl_mw_gyro_bmi160_start(s.device.board)
+# start acc
+libmetawear.mbl_mw_acc_enable_acceleration_sampling(states.device.board)
+libmetawear.mbl_mw_acc_start(states.device.board)
+
+# start gyro
+libmetawear.mbl_mw_gyro_bmi160_enable_rotation_sampling(states.device.board)
+libmetawear.mbl_mw_gyro_bmi160_start(states.device.board)
 
 # sleep 10 s
-sleep(0.5)
+sleep(1.0)
 
 # breakdown metawears
-for s in states:
-    # stop acc
-    libmetawear.mbl_mw_acc_stop(s.device.board)
-    libmetawear.mbl_mw_acc_disable_acceleration_sampling(s.device.board)
-    
-    # stop gyro
-    libmetawear.mbl_mw_gyro_bmi160_stop(s.device.board)
-    libmetawear.mbl_mw_gyro_bmi160_disable_rotation_sampling(s.device.board)
 
-    # unsubscribe acc
-    acc = libmetawear.mbl_mw_acc_get_acceleration_data_signal(s.device.board)
-    libmetawear.mbl_mw_datasignal_unsubscribe(acc)
-    
-    # unsubscribe gyro
-    gyro = libmetawear.mbl_mw_gyro_bmi160_get_rotation_data_signal(s.device.board)
-    libmetawear.mbl_mw_datasignal_unsubscribe(gyro)
-    
-    # disconnect
-    libmetawear.mbl_mw_debug_disconnect(s.device.board)
+# stop acc
+libmetawear.mbl_mw_acc_stop(states.device.board)
+libmetawear.mbl_mw_acc_disable_acceleration_sampling(states.device.board)
+
+# stop gyro
+libmetawear.mbl_mw_gyro_bmi160_stop(states.device.board)
+libmetawear.mbl_mw_gyro_bmi160_disable_rotation_sampling(states.device.board)
+
+# unsubscribe acc
+acc = libmetawear.mbl_mw_acc_get_acceleration_data_signal(states.device.board)
+libmetawear.mbl_mw_datasignal_unsubscribe(acc)
+
+# unsubscribe gyro
+gyro = libmetawear.mbl_mw_gyro_bmi160_get_rotation_data_signal(states.device.board)
+libmetawear.mbl_mw_datasignal_unsubscribe(gyro)
+
+# disconnect
+libmetawear.mbl_mw_debug_disconnect(states.device.board)
 
 # download recap
 print("Total Samples Received")
-for s in states:
-    print("%s -> %d" % (s.device.address, s.samples))
+print("%s -> %d" % (states.device.address, states.samples))
