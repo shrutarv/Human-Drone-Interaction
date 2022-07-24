@@ -15,6 +15,7 @@ class interface_IMU:
         #set gyrometerlogging settings
         self.imu_client.accelerometer.set_settings(data_rate=50)
         self.imu_client.accelerometer.high_frequency_stream = False
+        self.imu_client.gyroscope.set_settings(data_rate=50.0)
 
         self.switch_pressed = None
 
@@ -75,3 +76,22 @@ class interface_IMU:
     def get_imu_data(self):
         data_acc = self.download_data()
         return data_acc
+
+    
+
+
+    def start_streaming(self):
+        def acc_callback(data):
+            print("Acc:",data) # [{0}] - X: {1}, Y: {2}, Z: {3}".format(data[0], *data[1]))
+
+        def gyro_callback(data):
+            print("gyro:",data) # [{0}] - X: {1}, Y: {2}, Z: {3}".format(data[0], *data[1]))
+
+        print("Subscribing to gyroscope signal notifications...")
+        self.imu_client.gyroscope.notifications(gyro_callback)
+        print("Subscribing to accelerometer signal notifications...")
+        self.imu_client.accelerometer.notifications(acc_callback)
+
+    def stop_streaming(self):
+        self.imu_client.gyroscope.notifications(None)
+        self.imu_client.accelerometer.notifications(None)
