@@ -59,15 +59,15 @@ while True:
         prediction = model.predict(data_rescaled)
         gesture_idx = np.argmax(prediction)
         prediction_awg = np.average(prediction,axis=0)
-        print(data_rescaled.shape)
+        #print(data_rescaled.shape)
         print(gestures[str(gesture_idx)])
         print('Confidence: ', np.max(prediction)*100,'%')
-        fig, axs = plt.subplots(2)
-        axs[0].plot(data_rescaled[0,:,:3])
-        axs[0].set_title('acc')
-        axs[1].plot(data_rescaled[0,:,3:])
-        axs[1].set_title('gyro')
-        plt.show()
+        #fig, axs = plt.subplots(2)
+        #axs[0].plot(data_rescaled[0,:,:3])
+        #axs[0].set_title('acc')
+        #axs[1].plot(data_rescaled[0,:,3:])
+        #axs[1].set_title('gyro')
+        #plt.show()
 
 
         
