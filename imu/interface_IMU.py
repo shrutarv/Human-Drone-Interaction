@@ -102,6 +102,7 @@ class interface_IMU:
     def get_data(self):
         acc_data = self.convert_data(self.acc_raw_data)
         gyro_data = self.convert_data(self.gyro_raw_data)
+        # Match the lengths of both the data
         if(acc_data.shape[0]>gyro_data.shape[0]):
             acc_data = acc_data[0:gyro_data.shape[0],:]
         else:
