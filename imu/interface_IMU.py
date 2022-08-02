@@ -7,19 +7,18 @@ import numpy as np
 class interface_IMU:
     def __init__(self, mac_addr) -> None:
         '''
-        Connect to IMU
+        This class creates a client to connect to IMU. It has methods to start and stop recording data and then download it.
         '''
         self.imu_client = MetaWearClient(mac_addr)
-#from scipy.signal import resample
         self.monitor_imu()
         
         self.acc_raw_data = []
         self.gyro_raw_data = []
 
-        #set gyrometerlogging settings
+        #setup accelerometer and gyroscope
         self.imu_client.accelerometer.set_settings(data_rate=50)
         self.imu_client.accelerometer.high_frequency_stream = False
-        self.imu_client.gyroscope.set_settings(data_rate=50.0)
+        self.imu_client.gyroscope.set_settings(data_rate=50)
 
         self.switch_pressed = None
 
@@ -39,17 +38,15 @@ class interface_IMU:
         
         #Subscribe to imu button notifications
         self.imu_client.switch.notifications(switch_callback)
-#from scipy.signal import resample
 
     
-    def start_logging(self):
-        self.imu_client.accelerometer.start_logging()
-        print('started data logging')
+#     def start_logging(self):
+#         self.imu_client.accelerometer.start_logging()
+#         print('started data logging')
 
-#from scipy.signal import resample
-    def stop_logging(self):
-        self.imu_client.accelerometer.stop_logging()
-        print('completed data logging')
+#     def stop_logging(self):
+#         self.imu_client.accelerometer.stop_logging()
+#         print('completed data logging')
 
     def convert_data(self,data):
         converted_data = np.zeros((len(data),3))
@@ -61,27 +58,27 @@ class interface_IMU:
         return converted_data
 
 
-    def download_data(self):
-        print("Downloading data...")
-        download_done = False
-        n = 0
-        data = None
-        while (not download_done) and n < 3:
-            try:
-                data = self.imu_client.accelerometer.download_log()
-                data_gyro = self.convert_data(data)
+    # def download_data(self):
+    #     print("Downloading data...")
+    #     download_done = False
+    #     n = 0
+    #     data = None
+    #     while (not download_done) and n < 3:
+    #         try:
+    #             data = self.imu_client.accelerometer.download_log()
+    #             data_gyro = self.convert_data(data)
 
-                download_done = True
-            except PyMetaWearDownloadTimeout:
-                print("Download of log interrupted. Trying to reconnect...")
-                self.imu_client.disconnect()
-                self.imu_client.connect()
-                n += 1
-        return data_gyro
+    #             download_done = True
+    #         except PyMetaWearDownloadTimeout:
+    #             print("Download of log interrupted. Trying to reconnect...")
+    #             self.imu_client.disconnect()
+    #             self.imu_client.connect()
+    #             n += 1
+    #     return data_gyro
     
-    def get_imu_data(self):
-        data_acc = self.download_data()
-        return data_acc
+    # def get_imu_data(self):
+    #     data_acc = self.download_data()
+    #     return data_acc
 
     def start_streaming(self):
         def acc_callback(data):
@@ -105,4 +102,8 @@ class interface_IMU:
     def get_data(self):
         acc_data = self.convert_data(self.acc_raw_data)
         gyro_data = self.convert_data(self.gyro_raw_data)
+        if(acc_data.shape[0]>gyro_data.shape[0]):
+            acc_data = acc_data[0:gyro_data.shape[0],:]
+        else:
+            gyro_data = gyro_data[0:acc_data.shape[0],:]
         return(acc_data, gyro_data)

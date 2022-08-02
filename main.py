@@ -45,11 +45,6 @@ while True:
         #data_acc = RE.get_imu_data()
         
         data_acc, data_gyro = RE.get_data()
-        if(data_acc.shape[0]>data_gyro.shape[0]):
-            data_acc = data_acc[0:data_gyro.shape[0],:]
-        else:
-            data_gyro = data_gyro[0:data_acc.shape[0],:]
-
 
         data_merged = np.concatenate((data_acc, data_gyro),axis=1)
 
