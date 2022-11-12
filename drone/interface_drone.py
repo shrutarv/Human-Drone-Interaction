@@ -11,7 +11,8 @@ from time import sleep
 
 class CrazyflieWrapper(object):
     def __init__(self, start_time, land_time, movement_time, movement_amount, height):
-        self.swarm = Crazyswarm()
+        cf_yaml = '/home/flw/crazyswarm/ros_ws/src/crazyswarm/launch/crazyflies.yaml'
+        self.swarm = Crazyswarm(crazyflies_yaml=cf_yaml)
         self.allcfs = self.swarm.allcfs
         self.start_time = start_time
         self.land_time = land_time
