@@ -5,11 +5,13 @@ import numpy as np
 from matplotlib import pyplot
 import matplotlib.pyplot as plt
 from os import getlogin
+from drone.interface_drone import InterfaceDrone
 
-
-#RE = interface_IMU('D3:FE:9A:01:90:57') #LE
-RE = interface_IMU('D4:C5:36:C4:7B:78')
 model = keras.models.load_model(f'/home/{getlogin()}/Human-Drone-Interaction/model_acc_gyro')
+
+drone = InterfaceDrone()
+
+RE = interface_IMU('D4:C5:36:C4:7B:78') # LE: 'D3:FE:9A:01:90:57'
 
 gestures = {
     '0':'swipe_left',
@@ -19,13 +21,27 @@ gestures = {
     '4':'H cw crl',
     '5':'H ccw crl',
     '6':'V cw crl',
-    '7':'V ccw crl',
-    
+    '7':'V ccw crl',   
 }
+
+gesture_command = {
+    '0':'Left',
+    '1':'Right',
+    '2':'Up',
+    '3':'Down',
+    '4':'CW_Circle',
+    '5':'CCW_Circle',
+    '6':'V cw crl',
+    '7':'V ccw crl',    
+}
+
 def rescale_xyz(arr):
     xyz_max = max(arr.reshape(-1,1))[0]
     arr_scaled = arr/xyz_max
     return arr_scaled
+
+######## Main ##############
+drone.takeoff()
 
 while True:
     try:
@@ -57,18 +73,23 @@ while True:
         prediction_awg = np.average(prediction,axis=0)
         #print(data_rescaled.shape)
         print(gestures[str(gesture_idx)])
-        print('Confidence: ', np.max(prediction)*100,'%')
+        confidence = np.max(prediction)*100
+        print('Confidence: ', confidence,'%')
+        if confidence>70:
+            drone.perform_gesture(gesture_command.get(str(gesture_idx)))
+        else:
+            print("Gesture confidence too low. Aborting movement")
+
         #fig, axs = plt.subplots(2)
         #axs[0].plot(data_rescaled[0,:,:3])
         #axs[0].set_title('acc')
         #axs[1].plot(data_rescaled[0,:,3:])
         #axs[1].set_title('gyro')
         #plt.show()
-
-
-        
+    
     except(KeyboardInterrupt):
         RE.imu_client.disconnect()
+        drone.land()
         print('IMU disconnected')
         print('Ending program')
         break
