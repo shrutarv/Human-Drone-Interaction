@@ -91,8 +91,8 @@ def format_decimal(number):
     return '{0:.2f}'.format(number)
 
 class InterfaceDrone:
-    def __init__(self) -> None:
-        self.realMode = False
+    def __init__(self, realMode=True) -> None:
+        self.realMode = realMode
         self.start_time = 2.5
         self.land_time = 2.5
         self.movement_time = 2.5
