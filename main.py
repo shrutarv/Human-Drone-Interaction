@@ -4,11 +4,12 @@ from scipy.signal import resample
 import numpy as np
 from matplotlib import pyplot
 import matplotlib.pyplot as plt
+from os import getlogin
 
 
 #RE = interface_IMU('D3:FE:9A:01:90:57') #LE
 RE = interface_IMU('D4:C5:36:C4:7B:78')
-model = keras.models.load_model('/home/violet/Master_Thesis/Human-Drone-Interaction/model_acc_gyro')
+model = keras.models.load_model(f'/home/{getlogin()}/Human-Drone-Interaction/model_acc_gyro')
 
 gestures = {
     '0':'swipe_left',
