@@ -7,6 +7,7 @@ from pycrazyswarm import *
 import sys
 import math
 import time
+import rospy
 from time import sleep
 
 class CrazyflieWrapper(object):
@@ -99,10 +100,18 @@ class InterfaceDrone:
         self.movement_time = 2.5
         self.movement_amount = 0.5
         self.height = 0.3
+        self.rate = 10  # [Hz] Rate of publishing waypoints
+        self.circle_path = self.generate_circle_path(r=2, time=self.movement_time)
         if self.realMode:
             print(self.realMode)
             self.cfs = CrazyflieWrapper(self.start_time, self.land_time, self.movement_time, self.movement_amount, self.height)
         print("Connected to Drone successfully")
+
+    def generate_circle_path(self,r:float,time:float):
+        pi=math.pi
+        n = time*self.rate # No. of points on circumference
+        waypoints = [(round((math.cos(2*pi/n*x)*r)-r, 2), round(math.sin(2*pi/n*x)*r, 2)) for x in range(0,n+1)]
+        return waypoints
 
     def takeoff(self):
         if self.realMode:
@@ -127,9 +136,24 @@ class InterfaceDrone:
         elif command == "Down":
             current_direction.addZ(-1.0)
         elif command == "CW_Circle":    #TODO: Check documentation for trajectory https://crazyswarm.readthedocs.io/en/latest/api.html#crazyflie-class
-            pass
+            waypoints = self.circle_path
+            rate = rospy.Rate(self.rate)
+            for waypoint in waypoints:
+                for cf in self.cfs.allcfs.crazyflies:
+                    pos = np.array(cf.initialPosition) + np.array([waypoint[0], waypoint[1], 0])
+                    cf.cmdPosition(pos)
+                rate.sleep()
+            return
         elif command == "CCW_Circle":
-            pass
+            waypoints = self.circle_path.reverse()  # Reverse the list to get CCW
+            rate = rospy.Rate(self.rate)
+            for waypoint in waypoints:
+                for cf in self.cfs.allcfs.crazyflies:
+                    pos = np.array(cf.initialPosition) + np.array([waypoint[0], waypoint[1], 0])
+                    cf.cmdPosition(pos)
+                rate.sleep()
+            return
+
         if self.realMode:
             if current_direction.length() > 0.01:
                 self.cfs.move(current_direction)
