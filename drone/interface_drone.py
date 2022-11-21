@@ -1,6 +1,6 @@
 import sys
 from os import getlogin
-sys.path.append(f"/home/{getlogin()}/crazyswarm/ros_ws/src/crazyswarm/scripts/")
+sys.path.append(f"/home/flw/IT_IS_WORKING/crazyswarm/ros_ws/src/crazyswarm/scripts/")
 
 import numpy as np
 from pycrazyswarm import *
@@ -12,7 +12,7 @@ from time import sleep
 
 class CrazyflieWrapper(object):
     def __init__(self, start_time, land_time, movement_time, movement_amount, height):
-        cf_yaml = '/home/flw/crazyswarm/ros_ws/src/crazyswarm/launch/crazyflies.yaml'
+        cf_yaml = '/home/flw/IT_IS_WORKING/crazyswarm/ros_ws/src/crazyswarm/launch/crazyflies.yaml'
         self.swarm = Crazyswarm(crazyflies_yaml=cf_yaml)
         self.allcfs = self.swarm.allcfs
         self.start_time = start_time
@@ -110,8 +110,8 @@ class InterfaceDrone:
     def generate_circle_path(self,r:float,time:float):
         pi=math.pi
         n = time*self.rate # No. of points on circumference
-        waypoints = [(round((math.cos(2*pi/n*x)*r)-r, 2), round(math.sin(2*pi/n*x)*r, 2)) for x in range(0,n+1)]
-        return waypoints
+        #waypoints = [(round((math.cos(2*pi/n*x)*r)-r, 2), round(math.sin(2*pi/n*x)*r, 2)) for x in range(0,n+1)]
+        #return waypoints
 
     def takeoff(self):
         if self.realMode:

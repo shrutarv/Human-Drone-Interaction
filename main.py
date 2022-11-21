@@ -9,7 +9,7 @@ from drone.interface_drone import InterfaceDrone
 
 model = keras.models.load_model(f'/home/{getlogin()}/Human-Drone-Interaction/model_acc_gyro')
 
-drone = InterfaceDrone(realMode=False)
+drone = InterfaceDrone(realMode=True)
 
 RE = interface_IMU('D4:C5:36:C4:7B:78') # LE: 'D3:FE:9A:01:90:57'
 
