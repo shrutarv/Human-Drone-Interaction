@@ -1,0 +1,17 @@
+Ubuntu 20 python3
+
+1)metamotion r - https://github.com/hbldh/pymetawear
+
+
+2)installation for metawear:
+sudo apt-get install bluetooth bluez libbluetooth-dev libudev-dev libboost-all-dev build-essential
+pip install warble
+pip install pymetawear
+
+
+3)6dmg - https://mingyu623.github.io/Download.html
+
+
+4)human drone interaction github - https://github.com/shrutarv/Human-Drone-Interaction
+ML model - Human-Drone-Interaction/data_preperation/data_and_model_preperation.py
+imu interface - Human-Drone-Interaction/imu/interface_IMU.py
