@@ -1,17 +1,17 @@
 import sys
-sys.path.append('/home/violet/Master_Thesis/Human-Drone-Interaction/')
+sys.path.append('/home/flw/Human-Drone-Interaction/')
 from imu.interface_IMU import interface_IMU
+
 import numpy as np
 from scipy.signal import resample
 
 LE = 'D3:FE:9A:01:90:57'
 RE = 'D4:C5:36:C4:7B:78'
-
 num_data_points = 50    # No. of data points in each recorded sample 
 num_features = 6    # No. of features recorded from imu
-gesture_save_directory = '/home/violet/Master_Thesis/Human-Drone-Interaction/data_preperation/recorded_gestures/'
+gesture_save_directory = '/home/flw/Human-Drone-Interaction/data_preperation/recorded_gestures/'
 
-imu = interface_IMU(RE)
+imu = interface_IMU(LE)
 
 while True:
     try:

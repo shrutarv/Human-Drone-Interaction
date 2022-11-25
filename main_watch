@@ -6,6 +6,8 @@ from matplotlib import pyplot
 import matplotlib.pyplot as plt
 from os import getlogin
 from drone.interface_drone import InterfaceDrone
+import time
+
 
 # Load the gesture classification model
 model = keras.models.load_model(f'/home/{getlogin()}/Human-Drone-Interaction/model_acc_gyro')
@@ -13,6 +15,7 @@ model = keras.models.load_model(f'/home/{getlogin()}/Human-Drone-Interaction/mod
 drone = InterfaceDrone(realMode=False)
 # Interface to IMU
 RE = interface_IMU('D3:FE:9A:01:90:57') # LE: 'D3:FE:9A:01:90:57' RE 'D4:C5:36:C4:7B:78'
+
 # Defining the gestures used
 gestures = {
     '0':'swipe_left',
@@ -60,11 +63,9 @@ while True:
             if RE.switch_pressed:
                 #RE.start_logging()
                 RE.start_streaming()
-                while not log_done:
-                    if not RE.switch_pressed:
-                        #RE.stop_logging()
-                        RE.stop_streaming()
-                        log_done = True
+                time.sleep(2)
+                RE.stop_streaming()
+                log_done = True
         
         #data_acc = RE.get_imu_data()
         

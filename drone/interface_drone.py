@@ -110,8 +110,8 @@ class InterfaceDrone:
     def generate_circle_path(self,r:float,time:float):
         pi=math.pi
         n = time*self.rate # No. of points on circumference
-        #waypoints = [(round((math.cos(2*pi/n*x)*r)-r, 2), round(math.sin(2*pi/n*x)*r, 2)) for x in range(0,n+1)]
-        #return waypoints
+        waypoints = [(round((math.cos(2*pi/n*x)*r)-r, 2), round(math.sin(2*pi/n*x)*r, 2)) for x in range(0,int(n+1))]
+        return waypoints
 
     def takeoff(self):
         if self.realMode:
