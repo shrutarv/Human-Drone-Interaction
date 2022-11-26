@@ -10,7 +10,7 @@ from drone.interface_drone import InterfaceDrone
 # Load the gesture classification model
 model = keras.models.load_model(f'/home/{getlogin()}/Human-Drone-Interaction/model_acc_gyro')
 # Interface to drone
-drone = InterfaceDrone(realMode=False)
+drone = InterfaceDrone(realMode=True)
 # Interface to IMU
 RE = interface_IMU('D3:FE:9A:01:90:57') # LE: 'D3:FE:9A:01:90:57' RE 'D4:C5:36:C4:7B:78'
 # Defining the gestures used

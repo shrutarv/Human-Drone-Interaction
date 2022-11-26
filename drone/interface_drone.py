@@ -118,6 +118,7 @@ class InterfaceDrone:
             self.cfs.start()
 
     def land(self):
+        print('landing drone')
         if self.realMode:
             self.cfs.land()
 
