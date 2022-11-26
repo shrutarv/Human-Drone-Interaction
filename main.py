@@ -99,8 +99,8 @@ while True:
         #plt.show()
     
     except(KeyboardInterrupt):
-        RE.imu_client.disconnect()
         drone.land()
+        RE.imu_client.disconnect()
         print('IMU disconnected')
         print('Ending program')
         break
