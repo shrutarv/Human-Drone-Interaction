@@ -10,7 +10,7 @@ from keras.layers import Dense
 from keras.layers import Dropout
 from keras.layers import LSTM
 
-gesture_data_path = '/home/violet/Master_Thesis/Human-Drone-Interaction/data_preperation/recorded_gestures/'
+gesture_data_path = '/home/flw/Human-Drone-Interaction/data_preperation/recorded_gestures/'
 
 try: # Load data from file if exists
     gesture_data = np.load(gesture_data_path+'gesture_data_custom.npy')
@@ -103,4 +103,4 @@ accuracy= accuracy*100.0
 print('Accuracy: ',accuracy,'%')
 
 # save the model
-model.save('/home/violet/Master_Thesis/Human-Drone-Interaction/model_acc_gyro_custom')
+model.save('/home/flw/Human-Drone-Interaction/model_acc_gyro_custom')

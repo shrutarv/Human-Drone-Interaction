@@ -80,7 +80,7 @@ while True:
         prediction = model.predict(data_rescaled)
         gesture_idx = np.argmax(prediction)
 
-        if gesture_idx<6:  
+        if gesture_idx<3:   # considering only first 4 gestures
             prediction_awg = np.average(prediction,axis=0)
             #print(data_rescaled.shape)
             print(gestures[str(gesture_idx)])
